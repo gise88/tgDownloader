@@ -1,0 +1,16 @@
+.directory
+.idea
+
+# dirs
+env2.7
+env3
+dist*
+test-data
+
+# files
+SECRETS.conf
+*.session
+*.py[cod]
+*.sqlite
+*.jpg
+
