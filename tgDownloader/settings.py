@@ -16,6 +16,8 @@ TELEGRAM_API_HASH_KEY = 'api_hash'
 TELEGRAM_PHONE_NUMBER_KEY = 'phone_number'
 ADMINS_CATEGORY = 'ADMINS'
 ENABLED_CHATS_CATEGORY = 'ENABLED_CHATS'
+BOT_SETTINGS_CATEGORY = 'BOT_SETTINGS'
+DOWNLOAD_OUTPUT_PATH_KEY = 'download_output_path'
 
 # repository github
 URL_REPO_GITHUB = 'https://github.com/gise88/tgDownloader'
