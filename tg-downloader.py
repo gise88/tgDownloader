@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import os
 import logging
 import mimetypes
+import traceback
 import configparser
 
 from telethon import TelegramClient
@@ -21,7 +22,7 @@ from tgDownloader import settings
 from tgDownloader.utils import format_size
 
 
-# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 logger = logging.getLogger(settings.BOT_NAME)
 logger.setLevel(logging.DEBUG)
@@ -33,6 +34,59 @@ ch.setFormatter(formatter)
 logger.addHandler(ch)
 
 mimetypes.init()
+
+
+# https://github.com/fumycat/blue-cauldron/blob/1d92a083b5f7edc25ad33fd24f6a078038a5d086/fm.py
+
+
+# UpdateNewMessage(
+#     message=Message(
+#         out=False,
+#         mentioned=False,
+#         media_unread=False,
+#         silent=False,
+#         post=False,
+#         id=1874,
+#         from_id=12584372,
+#         to_id=PeerChat(chat_id=299183716),
+#         fwd_from=MessageFwdHeader(
+#             from_id=None,
+#             date=datetime.utcfromtimestamp(1521101392),
+#             channel_id=1060974222,
+#             channel_post=34947,
+#             post_author=None,
+#             saved_from_peer=None,
+#             saved_from_msg_id=None
+#         ),
+#         via_bot_id=None,
+#         reply_to_msg_id=None,
+#         date=datetime.utcfromtimestamp(1521256249),
+#         message='@letueserietvita',
+#         media=MessageMediaDocument(
+#             document=Document(
+#                 id=5857046381864158228,
+#                 access_hash=-1533839058110400667,
+#                 date=datetime.utcfromtimestamp(1521023214),
+#                 mime_type='video/mp4',
+#                 size=432693585,
+#                 thumb=PhotoSizeEmpty(type=''),
+#                 dc_id=4,
+#                 version=0,
+#                 attributes=[
+#                     DocumentAttributeFilename(
+#                         file_name='1x01 Ghost Wars - LE TUE SERIE TV ITA.mp4')
+#                 ]),
+#             ttl_seconds=None),
+#         reply_markup=None,
+#         entities=[MessageEntityMention(offset=0, length=16)],
+#         views=5122,
+#         edit_date=None,
+#         post_author=None,
+#         grouped_id=None
+#     ),
+#     pts=3693,
+#     pts_count=1
+# )
 
 
 class TGDownloader(object):
@@ -65,12 +119,12 @@ class TGDownloader(object):
         #     sprint('{:3d}. {} | {}'.format(
         #         i, get_display_name(dialog.entity), dialog.entity.id))
         
-        self.admins_entities = { }
+        self.admins_entities = {}
         for admin_id in self.admins_id:
             self.admins_entities[admin_id] = \
                 self.client.get_entity(PeerUser(admin_id))
         
-        self.chats_entities = []
+        self.chats_entities = {}
         for chat_id in self.enabled_chats_id:
             self.chats_entities[chat_id] = \
                 self.client.get_entity(PeerChat(chat_id))
@@ -132,11 +186,11 @@ class TGDownloader(object):
                             mimetypes.guess_extension(doc.mime_type)
                         )
                     file_path = os.path.join(self.output_path, file_name)
-                    
+
                     print('{0} requests {1}'.format(
-                        file_name,
-                        self.admins_entities[msg.from_id]).stringify()
-                          )
+                        self.admins_entities[msg.from_id].first_name,
+                        file_name
+                    ))
                     
                     reply_message = self.client.send_message(
                         msg.to_id,
@@ -161,7 +215,7 @@ class TGDownloader(object):
                     )
             
             except Exception as e:
-                print(e)
+                traceback.format_exc()
     
     
     def start_and_idle_bot(self):
